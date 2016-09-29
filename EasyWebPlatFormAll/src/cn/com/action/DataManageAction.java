@@ -17,11 +17,11 @@ import org.jdom2.JDOMException;
 import org.jdom2.input.SAXBuilder;
 import org.jdom2.xpath.XPath;
 
-import util.Constants;
-import util.FileUtil;
-
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+
+import util.Constants;
+import util.FileUtil;
 
 /**
  * @author Houzw
@@ -180,8 +180,7 @@ public class DataManageAction extends BaseAction
 					}
 					childrenNode(jsonObject, jsonArray);
 					array.add(jsonObject);
-				}
-				catch (Exception e)
+				} catch (Exception e)
 				{
 					e.printStackTrace();
 				}
@@ -282,8 +281,7 @@ public class DataManageAction extends BaseAction
 					}
 					childrenNode(jsonObject, jsonArray);
 					array.add(jsonObject);
-				}
-				catch (Exception e)
+				} catch (Exception e)
 				{
 					e.printStackTrace();
 				}
@@ -347,8 +345,7 @@ public class DataManageAction extends BaseAction
 					}
 					childrenNode(jsonObject, jsonArray2);
 					array.add(jsonObject);
-				}
-				catch (Exception e)
+				} catch (Exception e)
 				{
 					e.printStackTrace();
 				}
@@ -404,8 +401,7 @@ public class DataManageAction extends BaseAction
 								String uploader = dataset.getChild("uploader").getText();
 								obj.put(Constants.UPLOADER, uploader);
 								XPath datasetXPath = XPath.newInstance("files/file[datasetName='" + datasetName + "']");
-								String tempFielpath = FileUtil.getXMLDirPath(request) + "\\"
-										+ Constants.USERS_INFORMATIONS + "\\" + uploader + "\\" + uploader + Constants._DATAFILES_DOT_XML;
+								String tempFielpath = FileUtil.getXMLDirPath(request) + "\\" + Constants.USERS_INFORMATIONS + "\\" + uploader + "\\" + uploader + Constants._DATAFILES_DOT_XML;
 								Document tempFielDoc = sb.build(new File(tempFielpath));
 								List<Element> datafiles = (List<Element>) datasetXPath.selectNodes(tempFielDoc);
 								setLeafValue(obj, datafiles);
@@ -470,8 +466,7 @@ public class DataManageAction extends BaseAction
 					}
 					childrenNode(jsonObject, jArray);
 					array.add(jsonObject);
-				}
-				catch (JDOMException e)
+				} catch (JDOMException e)
 				{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -481,52 +476,53 @@ public class DataManageAction extends BaseAction
 		writeJson(array.toJSONString());
 		// return SUCCESS;
 	}
+
 	public void returnProjectsData() throws IOException
 	{
-	    HttpServletRequest request = ServletActionContext.getRequest();
-	    Document filesdoc = null;
-	    String path = FileUtil.getXMLDirPath(request);
-	    String userString = (String) request.getSession().getAttribute(Constants.USERNAME);
-	    if (userString.equals("null") || StringUtils.isBlank(userString))
-	    {
-	        System.out.println("null");
-	        return;
-	        // return SUCCESS;
-	    }
-	    // _dataFiles.xml
-	    String dataPath = path + File.separator + Constants.USERS_INFORMATIONS + File.separator + userString + File.separator + userString + Constants._DATAFILES_DOT_XML;
-	    // projects.xml
-	    String projectPath = path + File.separator + Constants.PROJECTS_DOT_XML;
+		HttpServletRequest request = ServletActionContext.getRequest();
+		Document filesdoc = null;
+		String path = FileUtil.getXMLDirPath(request);
+		String userString = (String) request.getSession().getAttribute(Constants.USERNAME);
+		if (userString.equals("null") || StringUtils.isBlank(userString))
+		{
+			System.out.println("null");
+			return;
+			// return SUCCESS;
+		}
+		// _dataFiles.xml
+		String dataPath = path + File.separator + Constants.USERS_INFORMATIONS + File.separator + userString + File.separator + userString + Constants._DATAFILES_DOT_XML;
+		// projects.xml
+		String projectPath = path + File.separator + Constants.PROJECTS_DOT_XML;
 
-	    List < String > parantNodes = new ArrayList < String > ();
-	    parantNodes.add(Constants.PROJECTS);
-	    SAXBuilder sb = new SAXBuilder();
-	    String idString = Constants.PROJECTS;
-	    JSONObject jsonObject = new JSONObject();
-	    jsonObject.put(Constants.ID, idString);
-	    jsonObject.put(Constants.TEXT, idString);
-	    jsonObject.put(Constants.LEAF, false);
-	    jsonObject.put(Constants.TYPE, "data category");
-	    // jsonObject.put(Constants.CHECKED, false);
-	    JSONArray jsonArray = new JSONArray();
-	    try
-	    {
-	        jsonObject.put("expanded", true);
-	        SAXBuilder s = new SAXBuilder();
-	        File docFile = new File(projectPath);
+		List<String> parantNodes = new ArrayList<String>();
+		parantNodes.add(Constants.PROJECTS);
+		SAXBuilder sb = new SAXBuilder();
+		String idString = Constants.PROJECTS;
+		JSONObject jsonObject = new JSONObject();
+		jsonObject.put(Constants.ID, idString);
+		jsonObject.put(Constants.TEXT, idString);
+		jsonObject.put(Constants.LEAF, false);
+		jsonObject.put(Constants.TYPE, "data category");
+		// jsonObject.put(Constants.CHECKED, false);
+		JSONArray jsonArray = new JSONArray();
+		try
+		{
+			jsonObject.put("expanded", true);
+			SAXBuilder s = new SAXBuilder();
+			File docFile = new File(projectPath);
 
-	        if (!docFile.exists())
-	        {
-	            childrenNode(jsonObject, jsonArray);
-	            array.add(jsonObject);
-	            writeJson(array.toJSONString());
-	        }
-	        Document projsdoc = sb.build("File:" + projectPath);
-	        filesdoc = s.build("file:" + dataPath); // username?
-	        // get projects through creater
+			if (!docFile.exists())
+			{
+				childrenNode(jsonObject, jsonArray);
+				array.add(jsonObject);
+				writeJson(array.toJSONString());
+			}
+			Document projsdoc = sb.build("File:" + projectPath);
+			filesdoc = s.build("file:" + dataPath); // username?
+			// get projects through creater
 			XPath projPath = XPath.newInstance("projects/project[creater='" + userString + "']");
 			List<Element> allprojs = (List<Element>) projPath.selectNodes(projsdoc);
-	        JSONArray jArray = new JSONArray();
+			JSONArray jArray = new JSONArray();
 			// projects-(user:creater)-project-datasets-dataset-datafile
 			int y = 0;
 			for (Element proj : allprojs)
@@ -559,8 +555,7 @@ public class DataManageAction extends BaseAction
 						String uploader = dataset.getChild("uploader").getText();
 						obj.put(Constants.UPLOADER, uploader);
 						XPath datasetXPath = XPath.newInstance("files/file[datasetName='" + datasetName + "']");
-						String tempFielpath = FileUtil.getXMLDirPath(request) + "\\"
-								+ Constants.USERS_INFORMATIONS + "\\" + uploader + "\\" + uploader + Constants._DATAFILES_DOT_XML;
+						String tempFielpath = FileUtil.getXMLDirPath(request) + "\\" + Constants.USERS_INFORMATIONS + "\\" + uploader + "\\" + uploader + Constants._DATAFILES_DOT_XML;
 						Document tempFielDoc = sb.build(new File(tempFielpath));
 						List<Element> datafiles = (List<Element>) datasetXPath.selectNodes(tempFielDoc);
 						setLeafValue(obj, datafiles);
@@ -597,37 +592,37 @@ public class DataManageAction extends BaseAction
 					}
 					childrenNode(projObj, jsonObjects);
 				}
-	            if (proj.getChild("files") != null)
-	            {
-	                projObj.put(Constants.LEAF, false);
-	                List < Element > files = proj.getChild("files").getChildren("file");
-	                y++;
-	                for (int i = 0; i < files.size(); i++)
-	                {
-	                    Element file = files.get(i);
-	                    JSONObject obj = new JSONObject();
-	                    String fileName = file.getValue();
-	                    String user = fileName.substring(0, fileName.indexOf("/"));
-	                    fileName = fileName.substring(fileName.lastIndexOf("/") + 1);
-	                    obj.put(Constants.ID, idString + "-" + y + "-" + (i + 1));
-	                    // 补充？：读取username_datafiles.xml数据文件，获取数据相关内容
-	                    obj.put(Constants.TEXT, fileName);
-	                    obj.put(Constants.TYPE, "datafile");
-	                    obj.put(Constants.LEAF, true);
-	                    obj.put(Constants.UPLOADER, user);
-	                    jsonObjects.add(obj);
-	                }
-	                childrenNode(projObj, jsonObjects);
-	            }
-	            jArray.add(projObj);
-	        }
-	        childrenNode(jsonObject, jArray);
-	        array.add(jsonObject);
-	    }
-	    catch (JDOMException e)
-	    {
-	        e.printStackTrace();
-	    }
-	    writeJson(array.toJSONString());
+				if (proj.getChild("files") != null)
+				{
+					projObj.put(Constants.LEAF, false);
+					List<Element> files = proj.getChild("files").getChildren("file");
+					y++;
+					for (int i = 0; i < files.size(); i++)
+					{
+						Element file = files.get(i);
+						JSONObject obj = new JSONObject();
+						String fileName = file.getChildText("filename");
+						String user = file.getChildText("uploader");
+						// fileName =
+						// fileName.substring(fileName.lastIndexOf("/") + 1);
+						obj.put(Constants.ID, idString + "-" + y + "-" + (i + 1));
+						// 补充？：读取username_datafiles.xml数据文件，获取数据相关内容
+						obj.put(Constants.TEXT, fileName);
+						obj.put(Constants.TYPE, "datafile");
+						obj.put(Constants.LEAF, true);
+						obj.put(Constants.UPLOADER, user);
+						jsonObjects.add(obj);
+					}
+					childrenNode(projObj, jsonObjects);
+				}
+				jArray.add(projObj);
+			}
+			childrenNode(jsonObject, jArray);
+			array.add(jsonObject);
+		} catch (JDOMException e)
+		{
+			e.printStackTrace();
+		}
+		writeJson(array.toJSONString());
 	}
 }
